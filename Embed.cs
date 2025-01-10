@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace DiscordWebhook
@@ -9,27 +10,32 @@ namespace DiscordWebhook
         {
             fields = new List<Field>();
         }
-        public void Title(string title)
+        public void SetTitle(string title)
         {
             this.title = title;
         }
-        public void Color(int color)
+        public void SetColor(string color)
         {
-            this.color = color;
+            this.color = Color.FromHex(color);
         }
-        public void Description(string description)
+        public void SetDescription(string description)
         {
             this.description = description;
         }
-        public void Timestamp(string timestamp)
+        public void SetFormattedDescription(string description, object[] args)
+        {
+            if(this.description != null)
+                this.description = string.Format(description, args);
+        }
+        public void SetTimestamp(string timestamp)
         {
             this.timestamp = timestamp;
         }
-        public void Url(string url)
+        public void SetUrl(string url)
         {
             this.url = url;
         }
-        public void Author(string name, string url = "", string icon_url = "")
+        public void SetAuthor(string name, string url = "", string icon_url = "")
         {
             this.author = new Dictionary<string, string>
             {
@@ -38,21 +44,21 @@ namespace DiscordWebhook
                 { "icon_url", icon_url }
             };
         }
-        public void Image(string url)
+        public void SetImage(string url)
         {
             this.image = new Dictionary<string, string>
             {
                 { "url", url }
             };
         }
-        public void Thumbnail(string url)
+        public void SetThumbnail(string url)
         {
             this.thumbnail = new Dictionary<string, string>
             {
                 { "url", url }
             };
         }
-        public void Footer(string text, string icon_url = "")
+        public void SetFooter(string text, string icon_url = "")
         {
             this.footer = new Dictionary<string, string>
             {
@@ -64,9 +70,9 @@ namespace DiscordWebhook
         {
             this.fields.Add(new Field(name, value, inline));
         }
-        public void AddFields(List<Field> fields)
+        public void AddFields(Field[] fields)
         {
-            this.fields.AddRange(fields);
+            this.fields.AddRange(fields.ToList());
         }
         public string title { get; private set; }
         public int color { get; private set; }
@@ -86,6 +92,11 @@ namespace DiscordWebhook
             this.name = name;
             this.value = value;
             this.inline = inline;
+        }
+        public void SetFormattedValue(string value, object[] args)
+        {
+            if(this.value != null)
+                this.value = string.Format(value, args);
         }
 
         public string name { get; set; }
